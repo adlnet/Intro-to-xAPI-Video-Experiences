@@ -5,9 +5,25 @@
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
   <meta name="author" content="ADL">
   <link rel="icon" href="favicon.ico">
-  <title>xAPI Video Experiences</title>
+  <title>Intro to xAPI Video Experiences</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <style>
+    div.statement-box-header {
+      height: 50px;
+      background-color: grey;
+      border-bottom: 1px solid black;
+      text-align: center;
+      font-size: 50px;
+    }
+    div.statement-box {
+      width: 450px;
+      height: 390px;
+      float: right;
+      border: 1px solid black;
+    }
+  </style>
 </head>
 
 <body>
@@ -20,47 +36,55 @@
     </div>
 
     <div class="row">
-
       <div class="form-group col-md-12">
 
-        <div id="player"></div>
+        <div id="player" style="float:left"></div>
 
-        <p>This example uses minimal javascript and the youtube <a href="https://developers.google.com/youtube/iframe_api_reference" target="_blank">iframe API</a>.</p>
-        <p>Statements are built with xapi-youtube-statements.js and dispatched to an LRS with xapiwrapper.min.js using a custom ADL.XAPIYoutubeStatements.onStateChangeCallback function.</p>
-        <p>You can view statements <a href="http://adlnet.github.io/xapi-statement-viewer/">with the statement viewer</a>.</p>
+        <!-- <div class="statement-box">
+          <div data-role="header" class="statement-box-header">Video Statements</div>
+        </div> -->
 
-      </div><!-- .col-md-12 -->
+      </div>
+    </div>
 
-    </div><!-- .row -->
+  </section>
 
-  </section><!-- .container -->
 
+  <!-- step 1 -->
   <script type="text/javascript" src="lib/xapiwrapper.min.js"></script>
   <script type="text/javascript" src="lib/videoprofile.js"></script>
   <script type="text/javascript" src="lib/xapi-youtube-statements.js"></script>
+  <!-- end step 1 -->
 
   <script>
 
+    // -- step 2.1 --
     var video = "tlBbt5niQto"; // Change this to your video ID
+    // -- end step 2.1 --
 
     // "global" variables read by ADL.XAPIYoutubeStatements
+    // -- step 2.2 --
     ADL.XAPIYoutubeStatements.changeConfig({
       "actor":  {"mbox":"mailto:anon@example.com", "name":"anonymous"},
       "videoActivity": {"id":"https://www.youtube.com/watch?v=" + video, "definition":{"name": {"en-US":video}} }
     });
+    // -- end step 2.2 --
 
+    // -- step 2.3 --
     function initYT() {
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
+    // -- end step 2.3 --
 
+    // -- step 2.4 --
     var player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
         height: '390',
-        width: '640',
+        width: '650',
         videoId: video,
         playerVars: { 'autoplay': 0 },
         events: {
@@ -71,15 +95,18 @@
     }
 
     initYT();
+    // -- end step 2.4 --
 
 
     // Auth for the LRS
+    // -- step 2.5 --
     var conf = {
         "endpoint" : "https://lrs.adlnet.gov/xapi/",
         "auth" : "Basic " + toBase64("xapi-tools:xapi-tools"),
     };
 
     ADL.XAPIWrapper.changeConfig(conf);
+    // -- end step 2.5 --
 
 
     /*

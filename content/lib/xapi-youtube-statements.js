@@ -97,9 +97,7 @@
       }
       // -- end step 4.2 --
 
-      // -- step 4.4 --
       var convertISOSecondsToNumber = function(time) { return Number(time.slice(2, -1)); };
-      // -- end step 4.4 --
 
       // -- step 5.1 --
       function initializeVideo(ISOTime) {
