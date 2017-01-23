@@ -13,8 +13,9 @@ This project was created to support various xAPI Workshops. If you are intereste
 #### Prerequisites
  * Familiarity with web programming with HTML and javascript
 
- #### Resources covered in session
-* [xAPI Wrapper](http://adlnet.github.io/xAPIWrapper and https://github.com/adlnet/xAPIWrapper)
+#### Resources covered in session
+* [xAPI Wrapper](https://github.com/adlnet/xAPIWrapper)
+* [xAPI Youtube](https://github.com/adlnet/xapi-youtube)
 
 ## License
    Copyright &copy;2016 Advanced Distributed Learning
