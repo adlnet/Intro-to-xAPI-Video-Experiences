@@ -10,7 +10,7 @@ This project was created to support various xAPI Workshops. If you are intereste
 #### Session description
  The session will cover the [xAPI YouTube wrapper](https://github.com/adlnet/xapi-youtube) with examples.
 
- #### Prerequisites
+#### Prerequisites
  * Familiarity with web programming with HTML and javascript
 
  #### Resources covered in session

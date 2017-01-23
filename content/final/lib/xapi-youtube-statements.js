@@ -1,6 +1,6 @@
 (function(ADL){
 
-    // -- step 4.3 --
+    // -- step 6.3 --
     var debug = true;
     var log = function(message)
     {
@@ -12,39 +12,38 @@
       }
       catch(e) { return false; }
     }
-    // -- end step 4.3 --
+    // -- end step 6.3 --
 
     XAPIYoutubeStatements = function() {
 
-      // -- step 3.1 --
-      var actor = {"mbox":"mailto:anon@example.com", "name":"anonymous"};
+      // -- step 5.1 --
+      var actor = {"mbox":"mailto:youtube@example.com", "name":"youtube"};
       var videoActivity = {};
-      // -- end step 3.1 --
+      // -- end step 5.1 --
 
-      // -- step 4.1 --
+      // -- step 6.1 --
       var started = false;
       var seeking = false;
       var prevTime = 0.0;
       var completed = false;
-      // -- end step 4.1 --
+      // -- end step 6.1 --
 
-      // -- step 3.2 --
+      // -- step 5.2 --
       this.changeConfig = function(options) {
         actor = options.actor;
         videoActivity = options.videoActivity;
       }
-      // -- end step 3.2 --
+      // -- end step 5.2 --
 
-      // -- step 3.3 --
+      // -- step 5.3 --
       this.onPlayerReady = function(event) {
         var message = "yt: player ready";
         log(message);
-        ADL.XAPIYoutubeStatements.onPlayerReadyCallback(message);
         window.onunload = exitVideo;
       }
-      // -- end step 3.3 --
+      // -- end step 5.3 --
 
-      // -- step 3.4 --
+      // -- step 5.4 --
       this.onStateChange = function(event) {
         var curTime = player.getCurrentTime().toString();
         var ISOTime = "PT" + curTime.slice(0, curTime.indexOf(".")+3) + "S";
@@ -84,9 +83,9 @@
           ADL.XAPIWrapper.sendStatement(stmt);
         }
       }
-      // -- end step 3.4 --
+      // -- end step 5.4 --
 
-      // -- step 4.2 --
+      // -- step 6.2 --
       function buildStatement(stmt) {
         if (stmt){
           var stmt = stmt;
@@ -95,11 +94,9 @@
         }
         return stmt;
       }
-      // -- end step 4.2 --
+      // -- end step 6.2 --
 
-      var convertISOSecondsToNumber = function(time) { return Number(time.slice(2, -1)); };
-
-      // -- step 5.1 --
+      // -- step 7.1 --
       function initializeVideo(ISOTime) {
         var stmt = {};
 
@@ -110,9 +107,9 @@
 
         return buildStatement(stmt);
       }
-      // -- end step 5.1 --
+      // -- end step 7.1 --
 
-      // -- step 5.2 --
+      // -- step 7.2 --
       function playVideo(ISOTime) {
         var stmt = {};
 
@@ -136,9 +133,9 @@
 
         return buildStatement(stmt);
       }
-      // -- end step 5.2 --
+      // -- end step 7.2 --
 
-      // -- step 5.3 --
+      // -- step 7.3 --
       function pauseVideo(ISOTime) {
         var stmt = {};
 
@@ -158,9 +155,9 @@
           seeking = false;
         }
       }
-      // -- end step 5.3 --
+      // -- end step 7.3 --
 
-      // -- step 5.6 --
+      // -- step 7.6 --
       function seekVideo(ISOTime) {
         var stmt = {};
 
@@ -172,9 +169,9 @@
 
         return buildStatement(stmt);
       }
-      // -- end step 5.6 --
+      // -- end step 7.6 --
 
-      // -- step 5.4 --
+      // -- step 7.4 --
       function completeVideo(ISOTime) {
         if (completed) {
           return null;
@@ -191,9 +188,9 @@
 
         return buildStatement(stmt);
       }
-      // -- end step 5.4 --
+      // -- end step 7.4 --
 
-      // -- step 5.5 --
+      // -- step 7.5 --
       function exitVideo() {
         if (!started) {
           return;
@@ -221,7 +218,7 @@
         // send statement immediately to avoid event delay
         ADL.XAPIWrapper.sendStatement(buildStatement(stmt));
       }
-      // -- end step 5.5 --
+      // -- end step 7.5 --
 
     }
 

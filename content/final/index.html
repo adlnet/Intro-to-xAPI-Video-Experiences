@@ -9,21 +9,10 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-  <style>
-    div.statement-box-header {
-      height: 50px;
-      background-color: grey;
-      border-bottom: 1px solid black;
-      text-align: center;
-      font-size: 50px;
-    }
-    div.statement-box {
-      width: 450px;
-      height: 390px;
-      float: right;
-      border: 1px solid black;
-    }
-  </style>
+  <!-- step 2 -->
+  <script type="text/javascript" src="lib/xapiwrapper.min.js"></script>
+  <!-- end step 2 -->
+
 </head>
 
 <body>
@@ -32,18 +21,11 @@
 
     <div class="page-header">
       <h1 class="text-primary"><i class="fa fa-youtube"></i> xAPI Youtube Video Tracking</h1>
-      <h3 class="text-muted">Send Youtube Video interactions to an LRS with xAPI</h3>
     </div>
 
     <div class="row">
-      <div class="form-group col-md-12">
-
-        <div id="player" style="float:left"></div>
-
-        <!-- <div class="statement-box">
-          <div data-role="header" class="statement-box-header">Video Statements</div>
-        </div> -->
-
+      <div class="form-group col-md-12" style="text-align:center">
+        <div id="player"></div>
       </div>
     </div>
 
@@ -51,40 +33,60 @@
 
 
   <!-- step 1 -->
-  <script type="text/javascript" src="lib/xapiwrapper.min.js"></script>
   <script type="text/javascript" src="lib/videoprofile.js"></script>
   <script type="text/javascript" src="lib/xapi-youtube-statements.js"></script>
   <!-- end step 1 -->
 
   <script>
 
-    // -- step 2.1 --
+    // -- step 3.1
+    var myXAPI = {};
+    // -- end step 3.1
+
+    // -- step 3.2
+    ADL.launch(function (err, launchdata, xAPIWrapper) {
+      if (!err) {
+        ADL.XAPIWrapper = xAPIWrapper;
+        myXAPI.baseURI = launchdata.customData.content;
+      } else {
+        ADL.XAPIWrapper.changeConfig({
+          "endpoint":"https://lrs.adlnet.gov/xapi/",
+          "user":"xapi-workshop",
+          "password":"password1234"
+        });
+        myXAPI.baseURI = "http://adlnet.gov/event/xapiworkshop/non-launch";
+      }
+    }, true);
+    // -- end step 3.2
+
+
+    // -- step 4.1 --
     var video = "tlBbt5niQto"; // Change this to your video ID
-    // -- end step 2.1 --
+    // -- end step 4.1 --
 
     // "global" variables read by ADL.XAPIYoutubeStatements
-    // -- step 2.2 --
+    // -- step 4.2 --
     ADL.XAPIYoutubeStatements.changeConfig({
-      "actor":  {"mbox":"mailto:anon@example.com", "name":"anonymous"},
+      "actor":  {"mbox":"mailto:youtube@example.com", "name":"youtube"},
       "videoActivity": {"id":"https://www.youtube.com/watch?v=" + video, "definition":{"name": {"en-US":video}} }
     });
-    // -- end step 2.2 --
+    // -- end step 4.2 --
 
-    // -- step 2.3 --
+    // -- step 4.3 --
     function initYT() {
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
-    // -- end step 2.3 --
+    // -- end step 4.3 --
 
-    // -- step 2.4 --
+    // -- step 4.4 --
     var player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        height: '390',
-        width: '650',
+        height: '400',
+        width: '700',
         videoId: video,
         playerVars: { 'autoplay': 0 },
         events: {
@@ -95,37 +97,7 @@
     }
 
     initYT();
-    // -- end step 2.4 --
-
-
-    // Auth for the LRS
-    // -- step 2.5 --
-    var conf = {
-        "endpoint" : "https://lrs.adlnet.gov/xapi/",
-        "auth" : "Basic " + toBase64("xapi-tools:xapi-tools"),
-    };
-
-    ADL.XAPIWrapper.changeConfig(conf);
-    // -- end step 2.5 --
-
-
-    /*
-     * Custom Callbacks
-     */
-    ADL.XAPIYoutubeStatements.onPlayerReadyCallback = function(stmt) {
-      console.log("on ready callback");
-    }
-
-    // Dispatch Youtube statements with XAPIWrapper
-    ADL.XAPIYoutubeStatements.onStateChangeCallback = function(event, stmt) {
-      console.log(stmt);
-      if (stmt) {
-        stmt['timestamp'] = (new Date()).toISOString();
-        ADL.XAPIWrapper.sendStatement(stmt, function(){});
-      } else {
-        console.warn("no statement found in callback for event: " + event);
-      }
-    }
+    // -- end step 4.4 --
 
   </script>
 
