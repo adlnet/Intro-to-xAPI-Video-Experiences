@@ -5,9 +5,11 @@ This tutorial will allow you to see how to build and dispatch statements using
 [Youtube iframe API](https://developers.google.com/youtube/iframe_api_reference).
 This tutorial shows you how to:
   1. include xAPI Youtube scripts in an HTML page,
-  2. configure Youtube's iframe API,
-  3. create and initialize content in a JAVASCRIPT file,
-  4. send Youtube statements to the LRS.
+  2. include xAPI Wrapper in an HTML page,
+  3. configure the xAPI Wrapper with the LRS and client credentials,
+  4. configure Youtube's iframe API,
+  5. create and initialize content in a JAVASCRIPT file,
+  6. send Youtube statements to the LRS
 
 ## Step 1 - Include xAPI Youtube scripts in index.html
 First add a `<script>` tag in the `<body>` of `index.html` to include necessary scripts.
@@ -18,15 +20,51 @@ First add a `<script>` tag in the `<body>` of `index.html` to include necessary 
       <script type="text/javascript" src="lib/xapi-youtube-statements.js"></script>
   ...
   ```
+  
+## Step 2 - Include the xAPI Wrapper in reports.html
+The second step is to include the xAPI Wrapper file.
 
-## Step 2 - Configuring Youtube's iframe API
+  ``` html
+  ...
+      <script type="text/javascript" src="lib/xapiwrapper.min.js"></script>
+  ...
+  ```
+  
+## Step 3 - Configure the xAPI Wrapper
+Next you have to configure the xAPI Wrapper. By default, the xAPI Wrapper is configured to communicate with an LRS at localhost. We want to have xAPI Launch tell the content what configuration to use, instead of hardcoding the LRS and authentication details. By calling ADL.launch, the xAPIWrapper will do the handshake with xAPI Launch and pass a configured object to the callback. As a fallback, or if there is an error, we have hardcoded default values to use.
+
+  1. Create an `myXAPI` object just above the launch callback.
+  ``` javascript
+  ...
+      var myXAPI = {};
+  ...
+  ```
+  
+  2. xAPI Launch sends information (launch data) to the content, which the `ADL.launch` function sends to the callback. The `launchdata.customData` object contains content that can be configured in the xAPI Launch server, allowing us to enter a base URI we can use for all places that need a URI. If not using launch we can set our endpoint manually.
+  ``` javascript
+  ...
+      ADL.launch(function (err, launchdata, xAPIWrapper) {
+        if (!err) {
+          ADL.XAPIWrapper = xAPIWrapper;
+          myXAPI.baseURI = launchdata.customData.content;
+        } else {
+          ADL.XAPIWrapper.changeConfig({
+            "endpoint":"https://lrs.adlnet.gov/xapi/",
+            "user":"xapi-workshop",
+            "password":"password1234"
+          });
+          myXAPI.baseURI = "http://adlnet.gov/event/xapiworkshop/non-launch";
+        }
+    }, true);
+  ...
+  ```
+  
+## Step 4 - Configure Youtube's iframe API
 Next we need to configure the iframe API. This will be done inside the `<body>` of our `index.html`.
 
   1. Create a `video` object and initialize it to the video ID you wish to use.
   ``` javascript
   ...
-    <script>
-
       var video = "tlBbt5niQto"; // Change this to your video ID
   ...
   ```
@@ -36,7 +74,7 @@ Next we need to configure the iframe API. This will be done inside the `<body>` 
   ...
       // "global" variables read by ADL.XAPIYoutubeStatements
       ADL.XAPIYoutubeStatements.changeConfig({
-        "actor":  {"mbox":"mailto:anon@example.com", "name":"anonymous"},
+        "actor":  {"mbox":"mailto:youtube@example.com", "name":"youtube"},
         "videoActivity": {"id":"https://www.youtube.com/watch?v=" + video, "definition":{"name": {"en-US":video}} }
       });
   ...
@@ -60,8 +98,8 @@ Next we need to configure the iframe API. This will be done inside the `<body>` 
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-          height: '390',
-          width: '640',
+          height: '400',
+          width: '700',
           videoId: video,
           playerVars: { 'autoplay': 0 },
           events: {
@@ -75,20 +113,7 @@ Next we need to configure the iframe API. This will be done inside the `<body>` 
   ...
   ```
 
-  5. Create a `conf` object storing our `endpoint` and `auth` properties. Call `ADL.XAPIWrapper.changeConfig` passing in your `conf` object to successfully configure the [xAPI Wrapper](https://github.com/adlnet/xAPIWrapper).
-  ``` javascript
-  ...
-      // Auth for the LRS
-      var conf = {
-        "endpoint" : "https://lrs.adlnet.gov/xapi/",
-        "auth" : "Basic " + toBase64("xapi-tools:xapi-tools"),
-      };
-
-      ADL.XAPIWrapper.changeConfig(conf);
-  ...
-  ```
-
-## Step 3 - Initializing content in xapi-youtube-statements.js
+## Step 5 - Initializing content in xapi-youtube-statements.js
 Once the xAPI Wrapper is configured, we need to initialize our `XAPIYoutubeStatements` object by defining our global variables, functions, and events.
 
   1. Create an `actor` initializing it to default values, and a `videoActivity` object.
@@ -96,7 +121,7 @@ Once the xAPI Wrapper is configured, we need to initialize our `XAPIYoutubeState
   ...
     XAPIYoutubeStatements = function() {
 
-      var actor = {"mbox":"mailto:anon@example.com", "name":"anonymous"};
+      var actor = {"mbox":"mailto:youtube@example.com", "name":"youtube"};
       var videoActivity = {};      
   ...
   ```
@@ -117,13 +142,12 @@ Once the xAPI Wrapper is configured, we need to initialize our `XAPIYoutubeState
       this.onPlayerReady = function(event) {
         var message = "yt: player ready";
         log(message);
-        ADL.XAPIYoutubeStatements.onPlayerReadyCallback(message);
         window.onunload = exitVideo;
       }
   ...
   ```
 
-  4.  Next add the `this.onStateChange` event. Here we will get the video's current playing time, and parse it into a string for the statement's `extensions` property. You will then create a `stmt` object to send to the LRS. Make a switch statement for the `event.data` to determine the `player' object's current state. Look closely at `case 2:`. When you 'seek' or skip part of the video, `paused` and `played` statements would normally be sent to the LRS. Because you can't detect when the user 'seeked' directly, you will have to delay sending the `paused` statement by using `setTimeout` to wait 100 milliseconds before calling `pauseVideo`. Before you call `setTimeout`, get the current time(in milliseconds) with the `Date.now` function and store it in our `prevTime` object. After our `switch` statement, send the `stmt` to the LRS using `ADL.XAPIWrapper.sendStatement` if its valid.
+  4.  Next add the `this.onStateChange` event. Here we will get the video's current playing time, and parse it into a string for the statement's `extensions` property. You will then create a `stmt` object to send to the LRS. Make a switch statement for the `event.data` to determine the `player` object's current state. Look closely at `case 2:`. When you `seek` or skip part of the video, `paused` and `played` statements would normally be sent to the LRS. Because you can't detect when the user 'seeked' directly, you will have to delay sending the `paused` statement by using `setTimeout` to wait 100 milliseconds before calling `pauseVideo`. Before you call `setTimeout`, get the current time(in milliseconds) with the `Date.now` function and store it in our `prevTime` object. After our `switch` statement, send the `stmt` to the LRS using `ADL.XAPIWrapper.sendStatement` if its valid.
   ``` javascript
   ...
       this.onStateChange = function(event) {
@@ -168,7 +192,7 @@ Once the xAPI Wrapper is configured, we need to initialize our `XAPIYoutubeState
   ...
   ```
 
-## Step 4 - Adding helper functions & variables
+## Step 6 - Adding helper functions & variables
 Now that we have our events initialized, we need to create some helper functions and variables in order to properly send our statements.
 
   1. Start by creating 4 objects named `started`, `seeking`, `prevTime`, `completed`. These objects will help us determine the statement to send. `started` and `completed` are used for determining when we started or completed the video. `seeked` is used for skipping sections of the video. `prevTime` is used for calculating the elapsed time between function calls.
@@ -214,7 +238,7 @@ Now that we have our events initialized, we need to create some helper functions
   ...
   ```
 
-## Step 5 - Sending statements
+## Step 7 - Sending statements
 Next we need to create some functions that will handle sending the statements to the LRS. The functions 
 `initializeVideo`, `playVideo`, `pauseVideo`, and `completeVideo` are called from our `onStateChange` event.
 Other functions such as `seekVideo` and `exitVideo` will be called elsewhere.
@@ -361,6 +385,6 @@ Other functions such as `seekVideo` and `exitVideo` will be called elsewhere.
   ...
   ```
 
-## Step 6 - Try the app
+## Step 8 - Try the app
 Host the github project files on your server. Launch `index.html`. 
 The app should report your statements to the [ADL LRS](http://adlnet.github.io/xapi-statement-viewer/).
