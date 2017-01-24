@@ -1,7 +1,7 @@
 # Intro-to-xAPI-Video-Experiences
 
 This project was created to support various xAPI Workshops. If you are interested in trying the code tutorial, refer to the steps in the
-[Instructions in the reporting Readme](https://github.com/adlnet/Intro-to-xAPI-Video-Experiences/blob/master/README.md).
+[Instructions in the content ReadMe](https://github.com/adlnet/Intro-to-xAPI-Video-Experiences/blob/master/README.md).
 
 #### Facilitator(s)
 [Tom Creighton](https://www.linkedin.com/pub/tom-creighton/16/9b7/14)  
