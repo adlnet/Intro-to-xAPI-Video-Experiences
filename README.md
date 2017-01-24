@@ -4,7 +4,7 @@ This project was created to support various xAPI Workshops. If you are intereste
 [Instructions in the reporting Readme](https://github.com/adlnet/Intro-to-xAPI-Video-Experiences/blob/master/README.md).
 
 #### Facilitator(s)
-[Tom Creighton](https://www.linkedin.com/pub/tom-creighton/16/9b7/14)
+[Tom Creighton](https://www.linkedin.com/pub/tom-creighton/16/9b7/14)  
 [Lou Wolford](https://www.linkedin.com/pub/lou-wolford/42/747/623)
 
 #### Session description
