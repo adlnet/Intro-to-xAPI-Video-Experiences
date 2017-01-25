@@ -39,49 +39,49 @@
 
   <script>
 
-    // -- step 3.1
-    // var myXAPI = {};
-    // -- end step 3.1
+    // -- step 3.1 --
+    // var video = "tlBbt5niQto"; // Change this to your video ID
+    // -- end step 3.1 --
 
     // -- step 3.2
+    // var myXAPI = {};
+    // -- end step 3.2
+
+    // -- step 3.3
     // ADL.launch(function (err, launchdata, xAPIWrapper) {
     //   if (!err) {
     //     ADL.XAPIWrapper = xAPIWrapper;
-    //     myXAPI.baseURI = launchdata.customData.content;
+    //     myXAPI.actor = launchdata.actor;
+    //     myXAPI.context = launchdata.customData.content;
     //   } else {
     //     ADL.XAPIWrapper.changeConfig({
     //       "endpoint":"https://lrs.adlnet.gov/xapi/",
     //       "user":"xapi-workshop",
     //       "password":"password1234"
     //     });
-    //     myXAPI.baseURI = "http://adlnet.gov/event/xapiworkshop/non-launch";
+    //     myXAPI.actor = {account: {homePage:"http://example.com/watch-video", name: "youtube"}};
+    //     myXAPI.context = {contextActivities: {grouping: [{id: "http://adlnet.gov/event/xapiworkshop/non-launch"}]}};
     //   }
+    //
+    //   myXAPI.object = {id: "https://www.youtube.com/watch?v="+video, definition: {name: {"en-US": video}}};
+    //
+    //   // -- step 4.1 --
+    //   ADL.XAPIYoutubeStatements.changeConfig(myXAPI);
+    //   // -- end step 4.1 --
+    //
     // }, true);
-    // -- end step 3.2
+    // -- end step 3.3
 
-
-    // -- step 4.1 --
-    // var video = "tlBbt5niQto"; // Change this to your video ID
-    // -- end step 4.1 --
-
-    // "global" variables read by ADL.XAPIYoutubeStatements
     // -- step 4.2 --
-    // ADL.XAPIYoutubeStatements.changeConfig({
-    //   "actor":  {"mbox":"mailto:youtube@example.com", "name":"youtube"},
-    //   "videoActivity": {"id":"https://www.youtube.com/watch?v=" + video, "definition":{"name": {"en-US":video}} }
-    // });
-    // -- end step 4.2 --
-
-    // -- step 4.3 --
     // function initYT() {
     //   var tag = document.createElement('script');
     //   tag.src = "https://www.youtube.com/iframe_api";
     //   var firstScriptTag = document.getElementsByTagName('script')[0];
     //   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     // }
-    // -- end step 4.3 --
+    // -- end step 4.2 --
 
-    // -- step 4.4 --
+    // -- step 4.3 --
     // var player;
     // function onYouTubeIframeAPIReady() {
     //   player = new YT.Player('player', {
@@ -97,7 +97,7 @@
     // }
     //
     // initYT();
-    // -- end step 4.4 --
+    // -- end step 4.3 --
 
   </script>
 

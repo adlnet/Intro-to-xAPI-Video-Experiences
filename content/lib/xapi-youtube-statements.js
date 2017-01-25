@@ -17,8 +17,9 @@
     XAPIYoutubeStatements = function() {
 
       // -- step 5.1 --
-      // var actor = {"mbox":"mailto:youtube@example.com", "name":"youtube"};
-      // var videoActivity = {};
+      // var actor = {};
+      // var object = {};
+      // var context = {};
       // -- end step 5.1 --
 
       // -- step 6.1 --
@@ -29,9 +30,10 @@
       // -- end step 6.1 --
 
       // -- step 5.2 --
-      // this.changeConfig = function(options) {
-      //   actor = options.actor;
-      //   videoActivity = options.videoActivity;
+      // this.changeConfig = function(myXAPI) {
+      //   actor = myXAPI.actor;
+      //   object = myXAPI.object;
+      //   context = myXAPI.context;
       // }
       // -- end step 5.2 --
 
@@ -90,7 +92,8 @@
       //   if (stmt){
       //     var stmt = stmt;
       //     stmt.actor = actor;
-      //     stmt.object = videoActivity;
+      //     stmt.object = object;
+      //     stmt.context = context;
       //   }
       //   return stmt;
       // }
@@ -116,7 +119,7 @@
       //   // calculate time from paused state
       //   var elapTime = (Date.now() - prevTime) / 1000.0;
       //
-      //   if (!started || elapTime > 0.3) {
+      //   if (!started || elapTime > 0.2) {
       //     log("yt: playing");
       //     stmt.verb = {
       //       id: ADL.videoprofile.verbs.played['@id'],
