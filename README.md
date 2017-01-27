@@ -1,20 +1,21 @@
 # Intro-to-xAPI-Video-Experiences
 
 This project was created to support various xAPI Workshops. If you are interested in trying the code tutorial, refer to the steps in the
-[Instructions in the reporting Readme]https://github.com/adlnet/Intro-to-xAPI-Video-Experiences/blob/master/README.md.
+[Instructions in the content ReadMe](https://github.com/adlnet/Intro-to-xAPI-Video-Experiences/blob/master/README.md).
 
 #### Facilitator(s)
-[Tom Creighton](https://www.linkedin.com/pub/tom-creighton/16/9b7/14)
+[Tom Creighton](https://www.linkedin.com/pub/tom-creighton/16/9b7/14)  
 [Lou Wolford](https://www.linkedin.com/pub/lou-wolford/42/747/623)
 
 #### Session description
  The session will cover the [xAPI YouTube wrapper](https://github.com/adlnet/xapi-youtube) with examples.
 
- #### Prerequisites
+#### Prerequisites
  * Familiarity with web programming with HTML and javascript
 
- #### Resources covered in session
-* [xAPI Wrapper](http://adlnet.github.io/xAPIWrapper and https://github.com/adlnet/xAPIWrapper)
+#### Resources covered in session
+* [xAPI Wrapper](https://github.com/adlnet/xAPIWrapper)
+* [xAPI Youtube](https://github.com/adlnet/xapi-youtube)
 
 ## License
    Copyright &copy;2016 Advanced Distributed Learning
