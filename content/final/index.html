@@ -52,7 +52,11 @@
       if (!err) {
         ADL.XAPIWrapper = xAPIWrapper;
         myXAPI.actor = launchdata.actor;
-        myXAPI.context = launchdata.customData.content;
+        if (launchdata.customData.content) {
+          myXAPI.context = {contextActivities: {grouping: [{id: launchdata.customData.content}]}};
+        } else {
+          myXAPI.context = {contextActivities: {grouping: [{id: "http://adlnet.gov/event/xapiworkshop/launch/no-customData"}]}};
+        }
       } else {
         ADL.XAPIWrapper.changeConfig({
           "endpoint":"https://lrs.adlnet.gov/xapi/",
