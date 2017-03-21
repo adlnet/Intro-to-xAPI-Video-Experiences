@@ -112,3 +112,51 @@ Next we need to configure the iframe API. This will be done inside the `<body>` 
       initYT();
   ...
   ```
+
+## Step 5 - Initializing content in xapi-youtube-statements.js
+Once the xAPI Wrapper is configured, we need to initialize our `XAPIYoutubeStatements`object by defining our global variables, functions, and events.
+
+  1. Create an `actor`, `object`, and `context` variables. These will represent our base statement properties when we first configure. These objects will never change, unless specified, for the length of our application.
+  ``` javascript
+  ...
+    XAPIYoutubeStatements = function() {
+
+      var actor = {};
+      var object = {};
+      var context = {};
+  ...
+  ```
+
+  2. Create a `this.changeConfig` function that will set our `actor`, `object`, and `context` variables. Make sure you specify `this` on the function name to allow global access.
+  ``` javascript
+  ...
+      this.changeConfig = function(myXAPI) {
+        actor = myXAPI.actor;
+        object = myXAPI.object;
+        context = myXAPI.context;
+      }
+  ...
+  ```
+
+  3. Add the `this.onPlayerReady` event next. This function will output a message to our `log` and attach our `exitVideo` function to the `window.onunload` event.
+  ``` javascript
+  ...
+      this.onPlayerReady = function(event) {
+        var message = "yt: player ready";
+        log(message);
+        window.onunload = exitVideo;
+      }
+  ...
+  ```
+
+  4.  Next add the `this.onStateChange` event. Here we will get the video's current playing time, and parse it into a string for the statement's `extensions` property. You will then create a `stmt` object to send to the LRS. Make a switch statement for the `event.data` to determine the `player` object's current state. Look closely at `case 2:`. When you `seek` or skip part of the video, `paused` and `played` statements would normally be sent to the LRS. Because you can't detect when the user 'seeked' directly, you will have to delay sending the `paused` statement by using `setTimeout` to wait 100 milliseconds before calling `pauseVideo`. Before you call `setTimeout`, get the current time(in milliseconds) with the `Date.now` function and store it in our `prevTime` object. After our `switch` statement, send the `stmt` to the LRS using `ADL.XAPIWrapper.sendStatement` if its valid.
+  ``` javascript
+  ...
+      this.onStateChange = function(event) {
+        var curTime = player.getCurrentTime().toString();
+        var ISOTime = "PT" + curTime.slice(0, curTime.indexOf(".")+3) + "S";
+        var stmt = null;
+        var e = "";
+  ...
+  ```
+
